@@ -1,0 +1,51 @@
+{
+	"name": "OutputFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "output"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "BusinessDate",
+				"type": "String"
+			},
+			{
+				"name": "RestaurantName",
+				"type": "String"
+			},
+			{
+				"name": "JobTitle",
+				"type": "String"
+			},
+			{
+				"name": "RegularCost",
+				"type": "String"
+			},
+			{
+				"name": "OvertimeCost",
+				"type": "String"
+			},
+			{
+				"name": "RegularHours",
+				"type": "String"
+			},
+			{
+				"name": "OvertimeHours",
+				"type": "String"
+			}
+		]
+	}
+}
