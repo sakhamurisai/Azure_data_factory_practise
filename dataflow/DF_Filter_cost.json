@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "DF_Filter_cost",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -14,6 +14,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "OutputFile",
+						"type": "DatasetReference"
+					},
 					"name": "sink1"
 				}
 			],
@@ -77,6 +81,15 @@
 				"SelectRequiredColumns filter(!(regularCost ==0 && overtimeCost == 0)) ~> RemoveRegularandOvertimeCost",
 				"RemoveRegularandOvertimeCost sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          BusinessDate as string,",
+				"          RestaurantName as string,",
+				"          JobTitle as string,",
+				"          RegularCost as string,",
+				"          OvertimeCost as string,",
+				"          RegularHours as string,",
+				"          OvertimeHours as string",
+				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
