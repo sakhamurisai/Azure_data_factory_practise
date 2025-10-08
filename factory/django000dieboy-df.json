@@ -1,0 +1,9 @@
+{
+	"name": "django000dieboy-df",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "78cf2bb2-ed91-4947-a309-1bb5e592fbe5",
+		"tenantId": "f86375c5-7ea5-4b5b-b9d3-7cd2a51880c0"
+	}
+}
