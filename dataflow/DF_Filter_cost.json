@@ -1,0 +1,98 @@
+{
+	"name": "DF_Filter_cost",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "source",
+						"type": "DatasetReference"
+					},
+					"name": "DFfilterrows"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "OutputFile",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SelectRequiredColumns"
+				},
+				{
+					"name": "RemoveRegularandOvertimeCost"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          restaurantGuid as string,",
+				"          businessDate as integer,",
+				"          regularHours as double,",
+				"          overtimeHours as double,",
+				"          totalHours as double,",
+				"          regularCost as double,",
+				"          overtimeCost as double,",
+				"          totalCost as double,",
+				"          netSalesAmount as string,",
+				"          grossSalesAmount as string,",
+				"          netSalesPerEmployeeHour as string,",
+				"          grossSalesPerEmployeeHour as string,",
+				"          totalCostPerNetSales as double,",
+				"          totalCostPerGrossSales as double,",
+				"          jobGuid as string,",
+				"          jobTitle as string,",
+				"          jobCode as string,",
+				"          employeeGuid as string,",
+				"          employeeFirstName as string,",
+				"          employeeLastName as string,",
+				"          employeeChosenName as string,",
+				"          restaurantName as string,",
+				"          restaurantLocationName as string,",
+				"          restaurantLocationCode as string,",
+				"          ExtractionTime as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> DFfilterrows",
+				"DFfilterrows select(mapColumn(",
+				"          restaurantGuid,",
+				"          businessDate,",
+				"          regularHours,",
+				"          overtimeHours,",
+				"          totalHours,",
+				"          regularCost,",
+				"          overtimeCost,",
+				"          totalCost,",
+				"          employeeGuid,",
+				"          employeeFirstName,",
+				"          employeeLastName,",
+				"          employeeChosenName,",
+				"          restaurantName",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectRequiredColumns",
+				"SelectRequiredColumns filter(!(regularCost ==0 && overtimeCost == 0)) ~> RemoveRegularandOvertimeCost",
+				"RemoveRegularandOvertimeCost sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          BusinessDate as string,",
+				"          RestaurantName as string,",
+				"          JobTitle as string,",
+				"          RegularCost as string,",
+				"          OvertimeCost as string,",
+				"          RegularHours as string,",
+				"          OvertimeHours as string",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

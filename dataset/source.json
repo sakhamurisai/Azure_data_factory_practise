@@ -1,0 +1,98 @@
+{
+	"name": "source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "data_500618ae-223d-4494-b003-c9fe9aeb3258_92bfe751-c142-4657-b34d-52259157f3d8.json",
+				"container": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"restaurantGuid": {
+					"type": "string"
+				},
+				"businessDate": {
+					"type": "integer"
+				},
+				"regularHours": {
+					"type": "number"
+				},
+				"overtimeHours": {
+					"type": "number"
+				},
+				"totalHours": {
+					"type": "number"
+				},
+				"regularCost": {
+					"type": "number"
+				},
+				"overtimeCost": {
+					"type": "number"
+				},
+				"totalCost": {
+					"type": "number"
+				},
+				"netSalesAmount": {
+					"type": "null"
+				},
+				"grossSalesAmount": {
+					"type": "null"
+				},
+				"netSalesPerEmployeeHour": {
+					"type": "null"
+				},
+				"grossSalesPerEmployeeHour": {
+					"type": "null"
+				},
+				"totalCostPerNetSales": {
+					"type": "number"
+				},
+				"totalCostPerGrossSales": {
+					"type": "number"
+				},
+				"jobGuid": {
+					"type": "string"
+				},
+				"jobTitle": {
+					"type": "string"
+				},
+				"jobCode": {
+					"type": "string"
+				},
+				"employeeGuid": {
+					"type": "null"
+				},
+				"employeeFirstName": {
+					"type": "null"
+				},
+				"employeeLastName": {
+					"type": "null"
+				},
+				"employeeChosenName": {
+					"type": "null"
+				},
+				"restaurantName": {
+					"type": "string"
+				},
+				"restaurantLocationName": {
+					"type": "string"
+				},
+				"restaurantLocationCode": {
+					"type": "string"
+				},
+				"ExtractionTime": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
