@@ -1,0 +1,342 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "django000dieboy-df"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OutputFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "BusinessDate",
+						"type": "String"
+					},
+					{
+						"name": "RestaurantName",
+						"type": "String"
+					},
+					{
+						"name": "JobTitle",
+						"type": "String"
+					},
+					{
+						"name": "RegularCost",
+						"type": "String"
+					},
+					{
+						"name": "OvertimeCost",
+						"type": "String"
+					},
+					{
+						"name": "RegularHours",
+						"type": "String"
+					},
+					{
+						"name": "OvertimeHours",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "data_500618ae-223d-4494-b003-c9fe9aeb3258_92bfe751-c142-4657-b34d-52259157f3d8.json",
+						"container": "data"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"restaurantGuid": {
+							"type": "string"
+						},
+						"businessDate": {
+							"type": "integer"
+						},
+						"regularHours": {
+							"type": "number"
+						},
+						"overtimeHours": {
+							"type": "number"
+						},
+						"totalHours": {
+							"type": "number"
+						},
+						"regularCost": {
+							"type": "number"
+						},
+						"overtimeCost": {
+							"type": "number"
+						},
+						"totalCost": {
+							"type": "number"
+						},
+						"netSalesAmount": {
+							"type": "null"
+						},
+						"grossSalesAmount": {
+							"type": "null"
+						},
+						"netSalesPerEmployeeHour": {
+							"type": "null"
+						},
+						"grossSalesPerEmployeeHour": {
+							"type": "null"
+						},
+						"totalCostPerNetSales": {
+							"type": "number"
+						},
+						"totalCostPerGrossSales": {
+							"type": "number"
+						},
+						"jobGuid": {
+							"type": "string"
+						},
+						"jobTitle": {
+							"type": "string"
+						},
+						"jobCode": {
+							"type": "string"
+						},
+						"employeeGuid": {
+							"type": "null"
+						},
+						"employeeFirstName": {
+							"type": "null"
+						},
+						"employeeLastName": {
+							"type": "null"
+						},
+						"employeeChosenName": {
+							"type": "null"
+						},
+						"restaurantName": {
+							"type": "string"
+						},
+						"restaurantLocationName": {
+							"type": "string"
+						},
+						"restaurantLocationCode": {
+							"type": "string"
+						},
+						"ExtractionTime": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DF_Filter_cost')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "source",
+								"type": "DatasetReference"
+							},
+							"name": "DFfilterrows"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "OutputFile",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SelectRequiredColumns"
+						},
+						{
+							"name": "RemoveRegularandOvertimeCost"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          restaurantGuid as string,",
+						"          businessDate as integer,",
+						"          regularHours as double,",
+						"          overtimeHours as double,",
+						"          totalHours as double,",
+						"          regularCost as double,",
+						"          overtimeCost as double,",
+						"          totalCost as double,",
+						"          netSalesAmount as string,",
+						"          grossSalesAmount as string,",
+						"          netSalesPerEmployeeHour as string,",
+						"          grossSalesPerEmployeeHour as string,",
+						"          totalCostPerNetSales as double,",
+						"          totalCostPerGrossSales as double,",
+						"          jobGuid as string,",
+						"          jobTitle as string,",
+						"          jobCode as string,",
+						"          employeeGuid as string,",
+						"          employeeFirstName as string,",
+						"          employeeLastName as string,",
+						"          employeeChosenName as string,",
+						"          restaurantName as string,",
+						"          restaurantLocationName as string,",
+						"          restaurantLocationCode as string,",
+						"          ExtractionTime as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> DFfilterrows",
+						"DFfilterrows select(mapColumn(",
+						"          restaurantGuid,",
+						"          businessDate,",
+						"          regularHours,",
+						"          overtimeHours,",
+						"          totalHours,",
+						"          regularCost,",
+						"          overtimeCost,",
+						"          totalCost,",
+						"          employeeGuid,",
+						"          employeeFirstName,",
+						"          employeeLastName,",
+						"          employeeChosenName,",
+						"          restaurantName",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectRequiredColumns",
+						"SelectRequiredColumns filter(!(regularCost ==0 && overtimeCost == 0)) ~> RemoveRegularandOvertimeCost",
+						"RemoveRegularandOvertimeCost sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          BusinessDate as string,",
+						"          RestaurantName as string,",
+						"          JobTitle as string,",
+						"          RegularCost as string,",
+						"          OvertimeCost as string,",
+						"          RegularHours as string,",
+						"          OvertimeHours as string",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/source')]",
+				"[concat(variables('factoryId'), '/datasets/OutputFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Execute_DF_Filter_Cost')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DF_Filter_cost",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"DFfilterrows": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DF_Filter_cost')]"
+			]
+		}
+	]
+}
