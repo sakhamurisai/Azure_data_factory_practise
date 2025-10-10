@@ -1,0 +1,6 @@
+{
+	"name": "postgresruntime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
