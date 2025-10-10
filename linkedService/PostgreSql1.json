@@ -1,0 +1,21 @@
+{
+	"name": "PostgreSql1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "PostgreSqlV2",
+		"typeProperties": {
+			"server": "PostgreSQl 16",
+			"port": 5432,
+			"database": "azure_test",
+			"username": "postgres",
+			"sslMode": 2,
+			"authenticationType": "Basic",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJkYjEwNjg4MC0yYzgxLTQ0OWEtYWI3ZS1hNDU2Nzc5ZmMxYjMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "postgresruntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
